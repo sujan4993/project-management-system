@@ -1,0 +1,12 @@
+<html>
+    <h1>
+        This is thymeleaf example.
+    </h1>
+    <h1 th:text="${name}"></h1>
+    
+    <ul>
+        <li th:each="color:${colors}" th:style="'color:'+${color}">
+        <span th:text="${color}"></span>
+        </li>
+    </ul>
+</html>
