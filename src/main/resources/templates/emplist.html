@@ -1,0 +1,27 @@
+
+<div id="modal-listEmp" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" modal-sm role="document">
+        <div class="modal-content">
+            <button type="button" class="close" id="close"  data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>      
+            <h4 class="modal-title">Assigned Employee</h4>            
+            <div class="modal-body">
+                <div class="box-body">
+                    <table class="table table-bordered">                    
+                        <tbody>
+                            <tr th:each="employee:${employee}">                                                       
+                                <td id="emp-td">
+                                    <a id="empList"  href="javascript:void(0)" 
+                                       class="btn btn-default btn-xs"
+                                       th:text="${employee.firstName}+' '+${employee.lastName}"></a>                                                               
+                                </td>                                                 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

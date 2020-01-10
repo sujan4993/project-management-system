@@ -5,6 +5,7 @@
  */
 package com.sujan.web.controller;
 
+import com.sujan.web.core.controller.SiteController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Controller
 @RequestMapping(value = "/")
-public class HomeController {
+public class HomeController extends SiteController {
 
+    public HomeController(){
+        this.pageTitle = "Main-Dashboard";
+    }
+    
     @GetMapping()
     public String index(Model model) {
         model.addAttribute("name","Creators Institute");
