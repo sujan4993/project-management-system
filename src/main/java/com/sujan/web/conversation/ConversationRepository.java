@@ -3,16 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sujan.web.client;
+package com.sujan.web.conversation;
 
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author sujan
  */
-public interface ClientRepository 
-        extends JpaRepository<Client, Integer> {   
+public interface ConversationRepository 
+        extends JpaRepository<Conversation, Integer>{
     
 }

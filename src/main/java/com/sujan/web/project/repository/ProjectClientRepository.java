@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sujan.web.client;
+package com.sujan.web.project.repository;
 
+import com.sujan.web.project.entity.ProjectClient;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,7 +13,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author sujan
  */
-public interface ClientRepository 
-        extends JpaRepository<Client, Integer> {   
+public interface ProjectClientRepository 
+        extends JpaRepository<ProjectClient,Integer> {
+    
+//    public List<ProjectClient> findByProjectId(int id);
     
 }

@@ -10,6 +10,7 @@ import com.sujan.web.core.controller.CRUDController;
 import com.sujan.web.employee.Employee;
 import com.sujan.web.employee.EmployeeRepository;
 import com.sujan.web.project.entity.ProjectEmployee;
+import com.sujan.web.project.repository.ProjectClientRepository;
 import com.sujan.web.project.repository.ProjectEmployeeRepository;
 import com.sujan.web.project.repository.ProjectRepository;
 import com.sujan.web.status.StatusRepository;
@@ -45,6 +46,9 @@ public class ProjectController extends CRUDController<Project, Integer> {
     @Autowired
     private StatusRepository statusRepository;
 
+    @Autowired
+    private ProjectClientRepository projectClientRepository;
+
     public ProjectController() {
         pageTitle = "Project";
         uri = "projects";
@@ -58,6 +62,12 @@ public class ProjectController extends CRUDController<Project, Integer> {
         model.addAttribute("projects", projectRepository.findById(id).get());
         model.addAttribute("projectemployee", projectEmployeeRepository.findByProjectId(id));
         return "project/detail";
+    }
+
+    @GetMapping(value = "/conversation/{id}")
+    public String conversation(@PathVariable("id") int id, Model model) {
+        model.addAttribute("pageTitle", "Conversation");
+        return "project/conversation";
     }
 
     @Override

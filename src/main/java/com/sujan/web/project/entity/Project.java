@@ -8,6 +8,7 @@ package com.sujan.web.project.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sujan.web.client.Client;
+import com.sujan.web.conversation.Conversation;
 import com.sujan.web.employee.Employee;
 import com.sujan.web.status.Status;
 import java.util.ArrayList;
@@ -90,6 +91,9 @@ public class Project {
     @JsonIgnore
     @JoinColumn(name = "client_id",referencedColumnName = "id")
     private Client client;
+    
+    @OneToMany(mappedBy = "project")
+    private List<Conversation> conversations = new ArrayList<>();
 
     public Project() {
     }
@@ -102,6 +106,15 @@ public class Project {
         this.budget = budget;
     }
 
+    public List<Conversation> getConversations() {
+        return conversations;
+    }
+
+    public void setConversations(List<Conversation> conversations) {
+        this.conversations = conversations;
+    }
+
+    
     public Client getClient() {
         return client;
     }

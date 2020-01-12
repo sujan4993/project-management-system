@@ -16,7 +16,8 @@ import org.springframework.stereotype.Repository;
  * @author sujan
  */
 @Repository
-public interface ProjectEmployeeRepository extends JpaRepository<ProjectEmployee, Integer> {
+public interface ProjectEmployeeRepository 
+        extends JpaRepository<ProjectEmployee, Integer> {
     List<ProjectEmployee> findByProjectId(int id);
     
         

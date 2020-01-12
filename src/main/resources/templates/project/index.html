@@ -1,4 +1,40 @@
 <div th:replace="shared/header"></div>
+<div class="row">
+    <div class="col-xs-12">
+        <!-- jQuery Knob -->
+        <div class="box box-solid">
+            <div class="box-header">
+                <i class="fa fa-bar-chart-o"></i>
+
+                <h3 class="box-title">jQuery Knob</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-widget="remove"><i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+
+                    <div class="col-xs-6 col-md-3 text-center" th:each="project:${records}">
+                        <input type="text" class="knob" value="30" data-width="90" data-height="90" th:data-fgColor="${project.status.statusColor}">
+
+                        <div class="knob-label" th:text="${project.projectName}"></div>
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+
 <div class="col-md-12">
     <div class="box">
         <div class="box-header with-border">
@@ -15,13 +51,13 @@
                     <tr>
                         <th>Id</th>
                         <th>Project Name</th>
-                        <th>Description</th>
                         <th>Budget</th>
-                        <th>Assigned Employees</th>
+                        <th style="text-align: center">Members</th>
                         <th>Deadline</th>
                         <th>Task</th>
                         <th>Client</th>
                         <th>Status</th>
+                        <th>Conversation</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -29,20 +65,37 @@
                     <tr th:each="project:${records}">
                         <td th:text="${project.id}"></td>
                         <td th:text="${project.projectName}"></td>
-                        <td th:text="${project.description}"></td>
                         <td th:text="${project.budget}"></td>     
-                        <td>                            
+                        <td style="text-align: center">                            
                             <a  href="javascript:void(0)" class="list-emp-btn btn btn-default btn-xs"
                                 th:text="${project.employeeList.size()}"></a>
                             <a  href="javascript:void(0)" th:rel="${project.id}" class="add-emp-btn btn btn-default btn-xs">
                                 <span class="glyphicon glyphicon-plus"></span>
                             </a>                           
                         </td>
-                        <td th:text="${project.deadline}"></td>
-                        <td th:text="${project.tasks.size()}"></td>
-                        <td th:text="${project.client.firstName}"></td>
+                        <td th:text="${#dates.format(project.deadline, 'yyyy-MM-dd')}"></td>
+                        <td>
+                             <a  href="javascript:void(0)" class="btn btn-default btn-xs"
+                                th:text="${project.tasks.size()}"></a>
+                            <a  href="javascript:void(0)" th:rel="${project.id}" class="btn btn-default btn-xs">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </a>  
+                        </td>
+                        <td>
+                            <a class="client-popover-btn" data-popover-content=".client-popover" role="button" >
+                                <span  th:text="${project.client.firstName}+' '+${project.client.lastName}"></span>
+                            </a>
+                        </td>
                         <td th:style="'background:'+${project.status.statusColor}">
-                            <!--<span th:text="${project.status.statusColor}"></span>-->
+                        </td>
+                        <td>
+                            <a  href="javascript:void(0)" class="btn btn-default btn-xs"
+                                th:text="${project.conversations.size()}"></a>
+                            <a th:href="@{'/'+${pageURI}+'/conversation/'+${project.id}}" class="btn btn-primary btn-xs">Conversation
+
+                                <span class="glyphicon glyphicon-eye-open"></span> 
+                            </a>
+
                         </td>
                         <td>
                             <a th:href="@{'/'+${pageURI}+'/detail/'+${project.id}}" class="btn btn-primary btn-xs">
@@ -70,12 +123,33 @@
             </ul>
         </div>
     </div>
+</div>
 
+<!--client popover content-->
+<div class="client-popover" style="display: none">
+    <div class="popover-body">       
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="project:${projectclient}">
+                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <div th:replace="addemployee"></div>
 <div th:replace="emplist"></div>
 <div th:replace="shared/footer"></div>
+<script src="/webjars/adminlte/2.3.11/plugins/knob/jquery.knob.js"></script>
 <script>
     $(document).ready(function(){
     $('.add-emp-btn').on('click',function(){
@@ -93,16 +167,31 @@
     });
     $('.list-emp-btn').on('click',function(){
     $('#modal-listEmp').modal();        
-    })
+    });
+    });
+
+
+    $(function(){
+    $('.client-popover-btn').popover({
+    html:true,
+    placement:'top',
+    trigger: 'hover',
+    content: function(){    
+    var content = $(this).attr("data-popover-content");
+    return $(content).children(".popover-body").html();
+    }
+    });
     });
 
     <!--------------------->
     $(document).ready(function(){
     $.getJSON('/projects/employees',function(data){
     $.each(data,function(index,row){
-        console.log(row);    
-    })
-    })
-    })
+    console.log(row);    
+    });
+    });
+    });
+
+    $(".knob").knob();
 
 </script>
