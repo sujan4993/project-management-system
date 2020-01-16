@@ -113,5 +113,12 @@ public class Client {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    public String getFullName(){
+        return firstName + " " +lastName;
+    }
   
+    public String toJSON(){
+        return "{\"id\":"+id+",\"name\":\""+getFullName() +"\",\"address\":\""+address +"\",\"phoneNo\":\""+phoneNo +"\",\"email\":\""+email+"\"}";
+    }
 }

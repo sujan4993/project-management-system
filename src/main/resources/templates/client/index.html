@@ -3,47 +3,18 @@
     <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title">
-                <a th:href="@{${pageURI}+'/create'}" class="btn btn-primary btn-xs">
+                <!--                <a th:href="@{${pageURI}+'/create'}" class="btn btn-primary btn-xs">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </a>-->
+                <a href="javascript:void(0)" class="btn btn-primary btn-xs add-btn">
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
             </h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th>Phone No</th>
-                        <th>Email</th>
-                        <th>Projects</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="client:${records}">
-                        <td th:text="${client.id}"></td>
-                        <td th:text="${client.firstName}+' '+${client.lastName}"></td>
-                        <td th:text="${client.address}"></td>
-                        <td th:text="${client.phoneNo}"></td>
-                        <td th:text="${client.email}"></td>
-                        <td th:text="${client.projects.size()}"></td>
-                        <td th:text="${client.status}==1 ? 'Active':'Inactive'"></td>
-                        
-                        <td>
-                            <a th:href="@{${pageURI}+'/edit/'+${client.id}}" class="btn btn-success btn-xs">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                            </a>
-                            <a th:href="@{${pageURI}+'/delete/'+${client.id}}" onclick="return confirm('Are you sure to delete?')" class="btn btn-danger btn-xs">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </a>
-                        </td>                        
-                    </tr>
-                </tbody>
-            </table>
+            <!--<div th:include="${viewPath}+'/table'"></div>-->
+            <div id="view-table" th:replace="client/table"></div>
         </div>
         <!-- /.box-body -->
         <div class="box-footer clearfix">
@@ -56,6 +27,54 @@
             </ul>
         </div>
     </div>
-
 </div>
+<div th:replace="client/components/form-dialog"></div>
+
 <div th:replace="shared/footer"></div>
+<script>
+    $(document).ready(function(){
+    $('.add-btn').on('click',function(){
+    var $dialog = $('#form-dialog');
+    $dialog.find('#modal-title')
+    .html('Create '+pageTitle)    
+    $dialog.modal();
+    $('input').val('');
+    $('input[type=checkbox]').attr('checked',false).val('1');    
+    $('input[name=id]').val(0);   
+    $('input[name=_csrf]').val(csrf);   
+    
+    return false;
+    });
+
+    $('.edit-btn').on('click',function(){    
+    var $id = $(this).attr('rel');
+    $.getJSON('/'+pageURI+'/json/'+$id,function(data){
+    var $dialog = $('#form-dialog');
+    $dialog.find('#modal-title')
+    .html('Edit '+pageTitle)
+    $('input[name=id]').val(data.id);
+    $('input[name=firstName]').val(data.firstName);
+    $('input[name=lastName]').val(data.lastName);
+    $('input[name=address]').val(data.address);
+    $('input[name=phoneNo]').val(data.phoneNo);
+    $('input[name=email]').val(data.email);
+    $('input[name=status]').attr('checked',data.status);
+    $dialog.modal();
+    })
+    return false;
+    });
+
+    $('#form-dialog').on('submit','#app-form',function(){    
+    $.post('/'+pageURI+'/json',$(this).serialize(),function(data){    
+    if(data==='success'){
+    $('#form-dialog').modal('hide');
+    $.get('/'+pageURI+'/table',function(data){    
+        $('#view-table').html(data);
+        
+    });
+    }
+    });
+    return false;
+    });
+    });
+</script>

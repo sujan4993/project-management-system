@@ -5,6 +5,7 @@
  */
 package com.sujan.web.core.controller;
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
@@ -13,10 +14,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
  */
 public abstract class SiteController {
 
-    protected String pageTitle;
+    protected String pageTitle,viewPath;
 
     @ModelAttribute(value = "pageTitle")
     public String getPageTitle() {
         return pageTitle;
+    }
+    @ModelAttribute()
+    public void globalVariables(Model model){
+    model.addAttribute("viewPath",viewPath);
     }
 }

@@ -1,0 +1,41 @@
+
+  <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Phone No</th>
+                        <th>Email</th>
+                        <th>Projects</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="client:${records}">
+                        <td th:text="${client.id}"></td>
+                        <td th:text="${client.firstName}+' '+${client.lastName}"></td>
+                        <td th:text="${client.address}"></td>
+                        <td th:text="${client.phoneNo}"></td>
+                        <td th:text="${client.email}"></td>
+                        <td th:text="${client.projects.size()}"></td>
+                        <td>
+                            <span th:text="${client.status}==1 ? 'Active'" class="label label-success"></span>
+                            <span th:text="${client.status}!=1 ? 'InActive'" class="label label-danger"></span>
+                        </td>
+
+                        <td>
+                            <!--                            <a th:href="@{${pageURI}+'/edit/'+${client.id}}" class="btn btn-success btn-xs">
+                                                            <span class="glyphicon glyphicon-pencil"></span>
+                                                        </a>-->
+                            <a href="javascript:void()" th:rel="${client.id}" class="btn btn-success btn-xs edit-btn">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                            <a th:href="@{${pageURI}+'/delete/'+${client.id}}" th:rel="${client.id}" onclick="return confirm('Are you sure to delete?')" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </td>                        
+                    </tr>
+                </tbody>
+            </table>

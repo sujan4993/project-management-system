@@ -1,0 +1,38 @@
+
+<!-- Modal -->
+<div class="modal fade" id="status-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Change Status</h4>
+            </div>
+            <form  method="post" action="/projects/update-status">
+                <div class="modal-body">
+                    <dl>
+                        <dt>Project Name</dt>
+                        <dd id="projectName">                 
+                        </dd>                                          
+                    </dl>   
+<!--                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" class="form-control">
+                            <option th:each="status:${status}"  th:value="${status.id}" th:text="${status.statusName}"></option> 
+                        </select>
+                    </div>-->
+                    <div class="form-group">
+                        <label>Remarks</label>
+                        <input type="text" name="remarks"class="form-control">                        
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <input type="hidden" name="project" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

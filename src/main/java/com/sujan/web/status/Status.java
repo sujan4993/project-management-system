@@ -5,6 +5,7 @@
  */
 package com.sujan.web.status;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sujan.web.project.entity.Project;
 import java.util.ArrayList;
@@ -14,8 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -38,9 +38,10 @@ public class Status {
     @Column(name = "status_color")
     private String statusColor;
     
-    
-    @JsonManagedReference
-    @OneToMany(mappedBy = "status")
+    @ManyToMany(mappedBy = "status")
+    @JsonIgnore
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "status")
     private List<Project> projects = new ArrayList<>();
 
     public List<Project> getProjects() {
@@ -74,6 +75,10 @@ public class Status {
 
     public void setStatusColor(String statusColor) {
         this.statusColor = statusColor;
+    }
+    
+    public String toJSON(){
+        return "{\"id\":"+id+",\"name\":\""+statusName+"\",\"address\":\""+statusColor+"\"}";
     }
     
 }

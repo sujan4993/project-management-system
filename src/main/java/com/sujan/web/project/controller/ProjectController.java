@@ -5,19 +5,21 @@
  */
 package com.sujan.web.project.controller;
 
+import com.sujan.web.client.ClientRepository;
 import com.sujan.web.project.entity.Project;
 import com.sujan.web.core.controller.CRUDController;
 import com.sujan.web.employee.Employee;
 import com.sujan.web.employee.EmployeeRepository;
 import com.sujan.web.project.entity.ProjectEmployee;
+import com.sujan.web.project.entity.ProjectStatus;
 import com.sujan.web.project.repository.ProjectClientRepository;
 import com.sujan.web.project.repository.ProjectEmployeeRepository;
 import com.sujan.web.project.repository.ProjectRepository;
+import com.sujan.web.project.repository.ProjectStatusRepository;
 import com.sujan.web.status.StatusRepository;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
-import org.hibernate.annotations.Formula;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,7 +50,12 @@ public class ProjectController extends CRUDController<Project, Integer> {
 
     @Autowired
     private ProjectClientRepository projectClientRepository;
+    
+     @Autowired
+    private ProjectStatusRepository projectStatusRepository;
 
+    @Autowired
+    private ClientRepository clientRepository;
     public ProjectController() {
         pageTitle = "Project";
         uri = "projects";
@@ -74,12 +81,15 @@ public class ProjectController extends CRUDController<Project, Integer> {
     public String index(Model model) {
         model.addAttribute("employee", employeeRepository.findAll());
         model.addAttribute("status", statusRepository.findAll());
+        model.addAttribute("client",clientRepository.findAll());
         return super.index(model); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String create(Model model) {
         model.addAttribute("employees", employeeRepository.findAll());
+        model.addAttribute("projectstatus",statusRepository.findAll());
+        model.addAttribute("projectclient",clientRepository.findAll());
         return super.create(model); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -110,6 +120,14 @@ public class ProjectController extends CRUDController<Project, Integer> {
         }
         projectEmployeeRepository.saveAll(projectEmployees);
         return "success";
+    }    
+    
+    @PostMapping(value = "/update-status")
+    @Transactional
+    @ResponseBody
+    public String updateStatus(ProjectStatus status){
+        projectStatusRepository.save(status);
+        return "success";
     }
-
+     
 }

@@ -6,24 +6,22 @@
             <div class="box-header">
                 <i class="fa fa-bar-chart-o"></i>
 
-                <h3 class="box-title">jQuery Knob</h3>
+                <h3 class="box-title">Project Status</h3>
 
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-default btn-sm" data-widget="remove"><i class="fa fa-times"></i>
-                    </button>
+                    </button>                   
                 </div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
                 <div class="row">
 
-                    <div class="col-xs-6 col-md-3 text-center" th:each="project:${records}">
+<!--                    <div class="col-xs-6 col-md-3 text-center" th:each="project:${records}">
                         <input type="text" class="knob" value="30" data-width="90" data-height="90" th:data-fgColor="${project.status.statusColor}">
 
                         <div class="knob-label" th:text="${project.projectName}"></div>
-                    </div>
+                    </div>-->
 
                 </div>
 
@@ -39,10 +37,19 @@
     <div class="box">
         <div class="box-header with-border">
             <h3 class="box-title">
-                <a th:href="@{${pageURI}+'/create'}" class="btn btn-primary btn-xs abc">
+                <!--                <a th:href="@{${pageURI}+'/create'}" class="btn btn-primary btn-xs abc">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </a>-->
+                <a href="javascript:void(0)" class="create-modal-btn btn btn-primary btn-xs abc">
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
             </h3>
+            <div>
+                <h5 th:each="status:${status}" style="display: inline-block">                    
+                    <span class="label" th:style="'background:'+${status.statusColor}" th:text="${status.statusName}"></span>
+                </h5>
+            </div>
+
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -75,19 +82,31 @@
                         </td>
                         <td th:text="${#dates.format(project.deadline, 'yyyy-MM-dd')}"></td>
                         <td>
-                             <a  href="javascript:void(0)" class="btn btn-default btn-xs"
+                            <a  href="javascript:void(0)" class="btn btn-default btn-xs"
                                 th:text="${project.tasks.size()}"></a>
                             <a  href="javascript:void(0)" th:rel="${project.id}" class="btn btn-default btn-xs">
                                 <span class="glyphicon glyphicon-plus"></span>
                             </a>  
                         </td>
                         <td>
-                            <a class="client-popover-btn" data-popover-content=".client-popover" role="button" >
+                            <a href="javascript:void(0)" class="client-popover-btn" th:rel="${project.client.toJSON()}" data-popover-content=".client-popover" >
                                 <span  th:text="${project.client.firstName}+' '+${project.client.lastName}"></span>
                             </a>
                         </td>
-                        <td th:style="'background:'+${project.status.statusColor}">
+                        <td th:style="'background:'+${project.status.get(project.status.size()-1).statusColor}">
+                            <span class="label"  ></span>
+                             <a  href="javascript:void(0)"   class="change-status-btn btn btn-default btn-xs" th:rel="${project.id}" th:data="${project.projectName}" >
+                                                                
+                                <span class="fa fa-exchange"></span>
+                            </a> 
                         </td>
+<!--                        <td>
+                            <span class="label" th:style="'background:'+${project.status.statusColor}" th:text="${project.status.statusName}"></span>
+                            <a  href="javascript:void(0)"   class="change-status-btn btn btn-default btn-xs" th:rel="${project.id}" th:data="${project.projectName}" >
+                                                                
+                                <span class="fa fa-exchange"></span>
+                            </a>  
+                        </td>-->
                         <td>
                             <a  href="javascript:void(0)" class="btn btn-default btn-xs"
                                 th:text="${project.conversations.size()}"></a>
@@ -101,7 +120,10 @@
                             <a th:href="@{'/'+${pageURI}+'/detail/'+${project.id}}" class="btn btn-primary btn-xs">
                                 <span class="glyphicon glyphicon-eye-open"></span> 
                             </a>
-                            <a th:href="@{'/'+${pageURI}+'/edit/'+${project.id}}" class="btn btn-success btn-xs">
+                            <!--                            <a th:href="@{'/'+${pageURI}+'/edit/'+${project.id}}" class="btn btn-success btn-xs">
+                                                            <span class="glyphicon glyphicon-pencil"></span>
+                                                        </a>-->
+                            <a href="javascript:void(0)" type="hidden"  class="edit-modal-btn btn btn-success btn-xs">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </a>
                             <a th:href="@{'/'+${pageURI}+'/delete/'+${project.id}}" onclick="return confirm('Are you sure to delete?')" class="btn btn-danger btn-xs">
@@ -125,27 +147,11 @@
     </div>
 </div>
 
-<!--client popover content-->
-<div class="client-popover" style="display: none">
-    <div class="popover-body">       
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="project:${projectclient}">
-                    
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
 
+<div th:replace="project/components/status-popup"></div>
+<div th:replace="project/components/client-popup"></div>
+<div th:replace="project-edit-modal"></div>
+<div th:replace="project-create-modal"></div>
 <div th:replace="addemployee"></div>
 <div th:replace="emplist"></div>
 <div th:replace="shared/footer"></div>
@@ -166,32 +172,51 @@
     return false;
     });
     $('.list-emp-btn').on('click',function(){
-    $('#modal-listEmp').modal();        
+    $('#modal-list-emp').modal();        
     });
     });
-
 
     $(function(){
     $('.client-popover-btn').popover({
-    html:true,
+    html:true,      
     placement:'top',
     trigger: 'hover',
     content: function(){    
-    var content = $(this).attr("data-popover-content");
-    return $(content).children(".popover-body").html();
+    var content = $(".client-popover"); 
+    var $row = JSON.parse($(this).attr('rel'));
+    $('#client-popup-id').html($row.id);
+    $('#client-popup-name').html($row.name);
+    $('#client-popup-address').html($row.address);
+    $('#client-popup-phone').html($row.phoneNo);
+    $('#client-popup-email').html($row.email);   
+    $('.client-popover').popover('show');
+    return content.html();
     }
     });
     });
 
-    <!--------------------->
-    $(document).ready(function(){
-    $.getJSON('/projects/employees',function(data){
-    $.each(data,function(index,row){
-    console.log(row);    
-    });
-    });
-    });
+
 
     $(".knob").knob();
 
+    $('.create-modal-btn').on('click',function(){
+    $('.project-create-modal').modal();
+    })
+    $('.edit-modal-btn').on('click',function(){     
+    $('.project-edit-modal').modal();
+    })
+
+
+    $('.change-status-btn').on('click',function(){
+        var $id = $(this).attr('rel');   
+        var $name=$(this).attr('data');
+        $statusPopup=$('#status-popup');
+        $statusPopup.find('#projectName').html($name);
+        $statusPopup.find('input[name=project]').val($id);
+        
+        $statusPopup.modal();
+    })
 </script>
+<style>
+
+</style>

@@ -5,12 +5,15 @@
  */
 package com.sujan.web.project.entity;
 
+import com.sujan.web.status.Status;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,13 +31,15 @@ public class ProjectStatus {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "status_id")
-    private int statusId;
+    @JoinColumn(name = "status_id",referencedColumnName = "id")
+    @ManyToOne
+    private Status status;
 
-    @Column(name = "project_id")
-    private int projectId;
+    @JoinColumn(name = "project_id",referencedColumnName = "id")
+    @ManyToOne
+    private Project project;
 
-    @Column(name = "status_date",nullable=true)                 
+    @Column(name = "status_date",insertable = false,updatable = false)                 
     @Temporal(TemporalType.TIMESTAMP)
     private Date statusDate;
     
@@ -49,22 +54,23 @@ public class ProjectStatus {
         this.id = id;
     }
 
-    public int getStatusId() {
-        return statusId;
+    public Project getProject() {
+        return project;
     }
 
-    public void setStatusId(int statusId) {
-        this.statusId = statusId;
+    public void setProject(Project project) {
+        this.project = project;
     }
 
-    public int getProjectId() {
-        return projectId;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setProjectId(int projectId) {
-        this.projectId = projectId;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
+       
     public Date getStatusDate() {
         return statusDate;
     }

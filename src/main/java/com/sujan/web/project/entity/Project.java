@@ -83,13 +83,22 @@ public class Project {
     
 
     @JsonBackReference
-    @ManyToOne()
-    @JoinColumn(name = "status_id", referencedColumnName = "id")
-    private Status status;
+    @ManyToMany
+    @JoinTable(
+            name = "tbl_status_project",
+            joinColumns
+            = @JoinColumn(name = "project_id"),
+            inverseJoinColumns
+            = {
+                @JoinColumn(name = "status_id")}
+    )
+//    @ManyToOne()
+//    @JoinColumn(name = "status_id", referencedColumnName = "id",nullable = true)
+    private List<Status> status=new ArrayList<>();
     
     @ManyToOne()
     @JsonIgnore
-    @JoinColumn(name = "client_id",referencedColumnName = "id")
+    @JoinColumn(name = "client_id",referencedColumnName = "id",nullable = true)
     private Client client;
     
     @OneToMany(mappedBy = "project")
@@ -123,8 +132,6 @@ public class Project {
         this.client = client;
     }
     
-    
-
     public List<Tasks> getTasks() {
         return tasks;
     }
@@ -133,16 +140,15 @@ public class Project {
         this.tasks = tasks;
     }
 
-    
-    
-    public Status getStatus() {
+    public List<Status> getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(List<Status> status) {
         this.status = status;
     }
 
+   
     public List<Employee> getEmployeeList() {
         return employeeList;
     }

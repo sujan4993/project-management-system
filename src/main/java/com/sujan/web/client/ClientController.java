@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author sujan
  */
 @Controller
-@RequestMapping(value = "/client")
+@RequestMapping(value = "/clients")
 public class ClientController extends CRUDController<Client, Integer>{
     
     public ClientController() {
         pageTitle = "Client";
-        uri = "client";
+        uri = "clients";
         viewPath = "client";
     }
     

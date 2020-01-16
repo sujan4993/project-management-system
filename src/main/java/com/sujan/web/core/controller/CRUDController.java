@@ -6,6 +6,7 @@
 package com.sujan.web.core.controller;
 
 import java.util.List;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.ui.Model;
@@ -27,6 +28,10 @@ public abstract class CRUDController<T, Id> extends SiteController {
     @ModelAttribute("pageURI")
     public String getURI() {
         return uri;
+    }
+    @ModelAttribute("viewPath")
+    public String getViewPath() {
+        return viewPath;
     }
 
     @Autowired
@@ -60,6 +65,19 @@ public abstract class CRUDController<T, Id> extends SiteController {
         repository.save(model);
         return "redirect:/" + uri + "?success";
     }
+    
+    @PostMapping(value = "/json")
+    @Transactional
+    @ResponseBody
+    public String saveJson(T model) {
+        repository.save(model);
+        return "success";
+    }
+    @GetMapping(value = "/table")
+    public String table(Model model) {
+        model.addAttribute("records", repository.findAll());
+        return viewPath + "/table";
+    }
 
     @GetMapping(value = "/edit/{id}")
     public String edit(@PathVariable("id") Id id, Model model) {
@@ -72,4 +90,6 @@ public abstract class CRUDController<T, Id> extends SiteController {
         repository.deleteById(id);
         return "redirect:/" + uri + "?success";
     }
+    
+    
 }
