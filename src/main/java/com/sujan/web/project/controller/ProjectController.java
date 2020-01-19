@@ -16,6 +16,7 @@ import com.sujan.web.project.repository.ProjectClientRepository;
 import com.sujan.web.project.repository.ProjectEmployeeRepository;
 import com.sujan.web.project.repository.ProjectRepository;
 import com.sujan.web.project.repository.ProjectStatusRepository;
+import com.sujan.web.project.repository.TasksRepository;
 import com.sujan.web.status.StatusRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,8 @@ public class ProjectController extends CRUDController<Project, Integer> {
     
      @Autowired
     private ProjectStatusRepository projectStatusRepository;
+     @Autowired
+     private TasksRepository tasksRepository;
 
     @Autowired
     private ClientRepository clientRepository;
@@ -82,6 +85,7 @@ public class ProjectController extends CRUDController<Project, Integer> {
         model.addAttribute("employee", employeeRepository.findAll());
         model.addAttribute("status", statusRepository.findAll());
         model.addAttribute("client",clientRepository.findAll());
+        model.addAttribute("tasks",tasksRepository.findAll());
         return super.index(model); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -126,7 +130,7 @@ public class ProjectController extends CRUDController<Project, Integer> {
     @Transactional
     @ResponseBody
     public String updateStatus(ProjectStatus status){
-        projectStatusRepository.save(status);
+         projectStatusRepository.save(status);
         return "success";
     }
      

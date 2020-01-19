@@ -7,19 +7,19 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">Change Status</h4>
             </div>
-            <form  method="post" action="/projects/update-status">
+            <form id="change-status" method="post" action="/projects/update-status">
                 <div class="modal-body">
                     <dl>
                         <dt>Project Name</dt>
                         <dd id="projectName">                 
                         </dd>                                          
                     </dl>   
-<!--                    <div class="form-group">
+                    <div class="form-group">
                         <label>Status</label>
                         <select name="status" class="form-control">
                             <option th:each="status:${status}"  th:value="${status.id}" th:text="${status.statusName}"></option> 
                         </select>
-                    </div>-->
+                    </div>
                     <div class="form-group">
                         <label>Remarks</label>
                         <input type="text" name="remarks"class="form-control">                        

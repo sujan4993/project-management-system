@@ -30,7 +30,7 @@
                         <dt>Project Budget</dt>
                         <dd th:text="${projects.budget}"></dd>
                         <dt>Status</dt>
-                        <dd th:text="${projects.status.statusName}"></dd>
+                        <dd th:text="${projects.status.get(projects.status.size()-1).statusName}"></dd>
                         <dt>Deadline</dt>
                         <dd th:text="${projects.deadline}"></dd>
                     </dl>

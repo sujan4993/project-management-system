@@ -17,11 +17,10 @@
             <div class="box-body">
                 <div class="row">
 
-<!--                    <div class="col-xs-6 col-md-3 text-center" th:each="project:${records}">
-                        <input type="text" class="knob" value="30" data-width="90" data-height="90" th:data-fgColor="${project.status.statusColor}">
-
+                    <div class="col-xs-6 col-md-3 text-center" th:each="project:${records}">
+                        <input type="text" class="knob" value="90" data-width="90" data-height="90" th:data-fgColor="${project.status.get(project.status.size()-1).statusColor}">
                         <div class="knob-label" th:text="${project.projectName}"></div>
-                    </div>-->
+                    </div>
 
                 </div>
 
@@ -74,7 +73,7 @@
                         <td th:text="${project.projectName}"></td>
                         <td th:text="${project.budget}"></td>     
                         <td style="text-align: center">                            
-                            <a  href="javascript:void(0)" class="list-emp-btn btn btn-default btn-xs"
+                            <a  href="javascript:void(0)" th:rel="${project.id}" class="list-emp-btn btn btn-default btn-xs"
                                 th:text="${project.employeeList.size()}"></a>
                             <a  href="javascript:void(0)" th:rel="${project.id}" class="add-emp-btn btn btn-default btn-xs">
                                 <span class="glyphicon glyphicon-plus"></span>
@@ -84,7 +83,7 @@
                         <td>
                             <a  href="javascript:void(0)" class="btn btn-default btn-xs"
                                 th:text="${project.tasks.size()}"></a>
-                            <a  href="javascript:void(0)" th:rel="${project.id}" class="btn btn-default btn-xs">
+                            <a  href="javascript:void(0)" th:rel="${project.id}" class="task-add-btn btn btn-default btn-xs">
                                 <span class="glyphicon glyphicon-plus"></span>
                             </a>  
                         </td>
@@ -94,9 +93,8 @@
                             </a>
                         </td>
                         <td th:style="'background:'+${project.status.get(project.status.size()-1).statusColor}">
-                            <span class="label"  ></span>
-                             <a  href="javascript:void(0)"   class="change-status-btn btn btn-default btn-xs" th:rel="${project.id}" th:data="${project.projectName}" >
-                                                                
+                            <span class="label" ></span>
+                             <a  href="javascript:void(0)"   class="change-status-btn btn btn-default btn-xs" th:rel="${project.id}" th:data="${project.projectName}" >                                                                
                                 <span class="fa fa-exchange"></span>
                             </a> 
                         </td>
@@ -147,13 +145,13 @@
     </div>
 </div>
 
-
+<div th:replace="project/components/task-add-modal"></div>
 <div th:replace="project/components/status-popup"></div>
 <div th:replace="project/components/client-popup"></div>
-<div th:replace="project-edit-modal"></div>
-<div th:replace="project-create-modal"></div>
-<div th:replace="addemployee"></div>
-<div th:replace="emplist"></div>
+<div th:replace="project/components/project-edit-modal"></div>
+<div th:replace="project/components/project-create-modal"></div>
+<div th:replace="project/components/addemployee"></div>
+<div th:replace="project/components/emplist"></div>
 <div th:replace="shared/footer"></div>
 <script src="/webjars/adminlte/2.3.11/plugins/knob/jquery.knob.js"></script>
 <script>
@@ -171,7 +169,22 @@
     });
     return false;
     });
-    $('.list-emp-btn').on('click',function(){
+    
+    
+    
+    $('.list-emp-btn').on('click',function(event){   
+        var $id = $(this).attr('rel');
+        console.log($id);
+     $.get('/projects/employees/'+$id,function(data){
+     $.each(data,function(index,row){
+     console.log(row.employee.firstName);
+     var empData =[];
+     var $data = (row.employee.firstName + row.employee.lastName);     
+     empData=$data; 
+      $('ul #test').append(empData);
+    })
+                      
+    });
     $('#modal-list-emp').modal();        
     });
     });
@@ -212,10 +225,21 @@
         var $name=$(this).attr('data');
         $statusPopup=$('#status-popup');
         $statusPopup.find('#projectName').html($name);
-        $statusPopup.find('input[name=project]').val($id);
-        
+        $statusPopup.find('input[name=project]').val($id);        
         $statusPopup.modal();
     })
+    
+    $('#status-popup').on('submit','#change-status',function(){
+    $.post('/projects/update-status',$(this).serialize(),function(data){    
+    $('#status-popup').modal('hide');
+    });
+    return false;
+    })
+    
+    $('.task-add-btn').on('click',function(){
+        $('#task-add-modal').modal();
+    })
+   
 </script>
 <style>
 
