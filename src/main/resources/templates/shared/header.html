@@ -4,6 +4,9 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!--        <meta name="_csrf" th:content="${_csrf.token}"/>
+         default header name is X-CSRF-TOKEN 
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
         <title th:text="${pageTitle}"></title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -26,9 +29,9 @@
         <script src="/webjars/adminlte/2.3.11/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
         <script th:inline="javascript">
-            const pageTitle= /*[[${pageTitle}]]*/;
-            const pageURI= /*[[${pageURI}]]*/
-            const csrf= /*[[${_csrf.token}]]*/
+            const pageTitle = /*[[${pageTitle}]]*/;
+            const pageURI = /*[[${pageURI}]]*/
+            const csrf = /*[[${_csrf.token}]]*/
         </script>
     </head>
     <body class="hold-transition skin-blue sidebar-mini">

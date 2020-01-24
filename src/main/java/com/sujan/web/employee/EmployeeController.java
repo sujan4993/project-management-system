@@ -8,10 +8,14 @@ package com.sujan.web.employee;
 import com.sujan.web.core.controller.CRUDController;
 import com.sujan.web.employee.Employee;
 import com.sujan.web.employee.EmployeeRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -35,6 +39,12 @@ public class EmployeeController extends CRUDController<Employee, Integer> {
         model.addAttribute("gender",employeeRepository.findAll());
         return super.create(model);
     }
-
+    
+    @GetMapping(value = "/project-notassigned/{projectId}")
+    @ResponseBody
+    public List<Employee> getNotAssignedEmployees(@PathVariable("projectId")
+    int projectId){
+        return employeeRepository.findEmployeeNotIn(projectId);
+    }
        
 }

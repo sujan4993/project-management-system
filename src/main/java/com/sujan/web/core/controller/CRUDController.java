@@ -23,16 +23,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public abstract class CRUDController<T, Id> extends SiteController {
 
     protected String uri;
-    protected String viewPath;
+   
 
     @ModelAttribute("pageURI")
     public String getURI() {
         return uri;
     }
-    @ModelAttribute("viewPath")
-    public String getViewPath() {
-        return viewPath;
-    }
+    
 
     @Autowired
     protected JpaRepository<T, Id> repository;
@@ -80,7 +77,7 @@ public abstract class CRUDController<T, Id> extends SiteController {
     }
 
     @GetMapping(value = "/edit/{id}")
-    public String edit(@PathVariable("id") Id id, Model model) {
+    public String edit(@PathVariable("id") Id id, Model model) {       
         model.addAttribute("record", repository.findById(id).get());
         return viewPath+"/edit";
     }

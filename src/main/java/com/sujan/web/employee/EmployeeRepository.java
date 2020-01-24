@@ -5,7 +5,9 @@
  */
 package com.sujan.web.employee;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  *
@@ -13,5 +15,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface EmployeeRepository 
         extends JpaRepository<Employee, Integer> {
+    
+    List<Employee> findByIsDeletedTrue();
+    
+    @Query(value = "select * from tbl_employees where id not in (select employee_id from project_employee"
+            + " where project_id=?)",nativeQuery = true)
+    List<Employee> findEmployeeNotIn(int projectId);
+    
     
 }

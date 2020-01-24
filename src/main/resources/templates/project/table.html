@@ -1,0 +1,82 @@
+<table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Project Name</th>
+                        <th>Budget</th>
+                        <th style="text-align: center">Members</th>
+                        <th>Deadline</th>
+                        <th>Task</th>
+                        <th>Client</th>
+                        <th>Status</th>
+                        <th>Conversation</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="myTbody">
+                    <tr th:each="project:${records}">
+                        <td th:text="${project.id}"></td>
+                        <td th:text="${project.projectName}"></td>
+                        <td th:text="${project.budget}"></td>     
+                        <td style="text-align: center">                            
+                            <a  href="javascript:void(0)" th:data-name="${project.projectName}" th:rel="${project.id}" class="list-emp-btn btn btn-default btn-xs"
+                                th:text="${project.employeeList.size()}"></a>
+                            <a  href="javascript:void(0)" th:rel="${project.id}" class="add-emp-btn btn btn-default btn-xs">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </a>                           
+                        </td>
+                        <td th:text="${#dates.format(project.deadline, 'yyyy-MM-dd')}"></td>
+                        <td>
+                            <a  href="javascript:void(0)" class="btn btn-default btn-xs"
+                                th:text="${project.tasks.size()}"></a>
+                            <a  href="javascript:void(0)" th:rel="${project.id}" class="task-add-btn btn btn-default btn-xs">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </a>  
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" class="client-popover-btn" th:rel="${project.client.toJSON()}"  >
+                                <span  th:text="${project.client.firstName}+' '+${project.client.lastName}"></span>
+                            </a>
+                        </td>
+                        <td th:style="'background:'+${project.status.get(project.status.size()-1).statusColor}">
+                            <span class="label" ></span>
+                            <a  href="javascript:void(0)"   class="change-status-btn btn btn-default btn-xs" th:rel="${project.id}" th:data="${project.projectName}" >                                                                
+                                <span class="fa fa-exchange"></span>
+                            </a> 
+                        </td>
+                        <!--                        <td>
+                                                    <span class="label" th:style="'background:'+${project.status.statusColor}" th:text="${project.status.statusName}"></span>
+                                                    <a  href="javascript:void(0)"   class="change-status-btn btn btn-default btn-xs" th:rel="${project.id}" th:data="${project.projectName}" >
+                                                                                        
+                                                        <span class="fa fa-exchange"></span>
+                                                    </a>  
+                                                </td>-->
+                        <td>
+                            <a  href="javascript:void(0)" class="btn btn-default btn-xs"
+                                th:text="${project.conversations.size()}"></a>
+                            <a th:href="@{'/'+${pageURI}+'/conversation/'+${project.id}}" class="btn btn-primary btn-xs">Conversation
+
+                                <span class="glyphicon glyphicon-eye-open"></span> 
+                            </a>
+
+                        </td>
+                        <td>
+                            <a th:href="@{'/'+${pageURI}+'/timeline/'+${project.id}}" class="btn btn-primary btn-xs">
+                                <span class="fa fa-navicon"></span> 
+                            </a>
+                            <a th:href="@{'/'+${pageURI}+'/detail/'+${project.id}}" class="btn btn-primary btn-xs">
+                                <span class="glyphicon glyphicon-eye-open"></span> 
+                            </a>
+                            <a th:href="@{'/'+${pageURI}+'/edit/'+${project.id}}" class="btn btn-success btn-xs">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+<!--                            <a href="javascript:void(0)" type="hidden"  class="edit-modal-btn btn btn-success btn-xs">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>-->
+                            <a th:href="@{'/'+${pageURI}+'/delete/'+${project.id}}" onclick="return confirm('Are you sure to delete?')" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </td>                        
+                    </tr>
+                </tbody>
+            </table>

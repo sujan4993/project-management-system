@@ -5,10 +5,12 @@
  */
 package com.sujan.web.project.repository;
 
+import com.sujan.web.employee.Employee;
 import com.sujan.web.project.entity.Project;
 import com.sujan.web.project.entity.ProjectEmployee;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -19,6 +21,6 @@ import org.springframework.stereotype.Repository;
 public interface ProjectEmployeeRepository 
         extends JpaRepository<ProjectEmployee, Integer> {
     List<ProjectEmployee> findByProjectId(int id);
-    
-        
+    int deleteByProjectIdAndEmployeeId(int projectId,int employeeId);
+      
 }

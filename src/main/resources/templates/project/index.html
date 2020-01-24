@@ -52,85 +52,7 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Project Name</th>
-                        <th>Budget</th>
-                        <th style="text-align: center">Members</th>
-                        <th>Deadline</th>
-                        <th>Task</th>
-                        <th>Client</th>
-                        <th>Status</th>
-                        <th>Conversation</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="myTbody">
-                    <tr th:each="project:${records}">
-                        <td th:text="${project.id}"></td>
-                        <td th:text="${project.projectName}"></td>
-                        <td th:text="${project.budget}"></td>     
-                        <td style="text-align: center">                            
-                            <a  href="javascript:void(0)" th:rel="${project.id}" class="list-emp-btn btn btn-default btn-xs"
-                                th:text="${project.employeeList.size()}"></a>
-                            <a  href="javascript:void(0)" th:rel="${project.id}" class="add-emp-btn btn btn-default btn-xs">
-                                <span class="glyphicon glyphicon-plus"></span>
-                            </a>                           
-                        </td>
-                        <td th:text="${#dates.format(project.deadline, 'yyyy-MM-dd')}"></td>
-                        <td>
-                            <a  href="javascript:void(0)" class="btn btn-default btn-xs"
-                                th:text="${project.tasks.size()}"></a>
-                            <a  href="javascript:void(0)" th:rel="${project.id}" class="task-add-btn btn btn-default btn-xs">
-                                <span class="glyphicon glyphicon-plus"></span>
-                            </a>  
-                        </td>
-                        <td>
-                            <a href="javascript:void(0)" class="client-popover-btn" th:rel="${project.client.toJSON()}" data-popover-content=".client-popover" >
-                                <span  th:text="${project.client.firstName}+' '+${project.client.lastName}"></span>
-                            </a>
-                        </td>
-                        <td th:style="'background:'+${project.status.get(project.status.size()-1).statusColor}">
-                            <span class="label" ></span>
-                             <a  href="javascript:void(0)"   class="change-status-btn btn btn-default btn-xs" th:rel="${project.id}" th:data="${project.projectName}" >                                                                
-                                <span class="fa fa-exchange"></span>
-                            </a> 
-                        </td>
-<!--                        <td>
-                            <span class="label" th:style="'background:'+${project.status.statusColor}" th:text="${project.status.statusName}"></span>
-                            <a  href="javascript:void(0)"   class="change-status-btn btn btn-default btn-xs" th:rel="${project.id}" th:data="${project.projectName}" >
-                                                                
-                                <span class="fa fa-exchange"></span>
-                            </a>  
-                        </td>-->
-                        <td>
-                            <a  href="javascript:void(0)" class="btn btn-default btn-xs"
-                                th:text="${project.conversations.size()}"></a>
-                            <a th:href="@{'/'+${pageURI}+'/conversation/'+${project.id}}" class="btn btn-primary btn-xs">Conversation
-
-                                <span class="glyphicon glyphicon-eye-open"></span> 
-                            </a>
-
-                        </td>
-                        <td>
-                            <a th:href="@{'/'+${pageURI}+'/detail/'+${project.id}}" class="btn btn-primary btn-xs">
-                                <span class="glyphicon glyphicon-eye-open"></span> 
-                            </a>
-                            <!--                            <a th:href="@{'/'+${pageURI}+'/edit/'+${project.id}}" class="btn btn-success btn-xs">
-                                                            <span class="glyphicon glyphicon-pencil"></span>
-                                                        </a>-->
-                            <a href="javascript:void(0)" type="hidden"  class="edit-modal-btn btn btn-success btn-xs">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                            </a>
-                            <a th:href="@{'/'+${pageURI}+'/delete/'+${project.id}}" onclick="return confirm('Are you sure to delete?')" class="btn btn-danger btn-xs">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </a>
-                        </td>                        
-                    </tr>
-                </tbody>
-            </table>
+            <div id="view-table" th:include="${viewPath}+'/table'"></div>
         </div>
         <!-- /.box-body -->
         <div class="box-footer clearfix">
@@ -151,95 +73,137 @@
 <div th:replace="project/components/project-edit-modal"></div>
 <div th:replace="project/components/project-create-modal"></div>
 <div th:replace="project/components/addemployee"></div>
-<div th:replace="project/components/emplist"></div>
+<div th:replace="project/components/employee-list-dialog"></div>
 <div th:replace="shared/footer"></div>
 <script src="/webjars/adminlte/2.3.11/plugins/knob/jquery.knob.js"></script>
 <script>
-    $(document).ready(function(){
-    $('.add-emp-btn').on('click',function(){
-    var $id=$(this).attr('rel');
-    $('#modal-project-id').val($id);
-    $('#modal-addemp').modal();
+    $(document).ready(function () {
+        $('.add-emp-btn').on('click', function () {
+            var $id = $(this).attr('rel');
+            $('#modal-project-id').val($id);
+            $('#modal-addemp').modal();
+        });
+
+        $('#add-employee-form').on('submit', function () {
+            $.post('/projects/employees/add', $(this).serialize(), function (data) {
+                reloadMainTable();
+                $('#modal-addemp').modal('hide');
+            });
+            return false;
+        });
+
+        $('.list-emp-btn').on('click', function (event) {
+            var $id = $(this).attr('rel');
+            var $projectName = $(this).attr('data-name');
+            var $dialog = $('#employee-list-dialog');
+            $dialog.find('#modal-title').html('Employee List of ' + $projectName);
+            console.log($projectName)
+            console.log($id);
+            $.get('/' + pageURI + '/employees/' + $id, function (data) {
+                $table = $('#employee-list-table tbody');
+                $table.find('tr').remove();
+                $.each(data, function (i, row) {
+                    var $tr = $('<tr/>');
+                    $('<td/>').html(row.id).appendTo($tr);
+                    $('<td/>').html(row.firstName + ' ' + row.lastName).appendTo($tr);
+                    $('<td/>').html(row.address).appendTo($tr);
+                    $('<td/>').html(row.phoneNo).appendTo($tr);
+                    $('<td/>').html('<a  data-project-id="' + $id + '" rel="' + row.id + '" class="btn btn-danger btn-xs remove-emp-btn" javascript:void(0)>\n\
+                                                         <span class="glyphicon glyphicon-trash"></span>\n\
+                                                         </a>').appendTo($tr);
+                    $tr.appendTo($table);
+                });
+
+                $dialog.modal();
+            });
+        });
+        $('#employee-list-table').on('click', '.remove-emp-btn', function () {
+            if (confirm('Are you sure to remove? ')) {
+                var $this = $(this);
+                $projectId = $this.attr('data-project-id');
+                $employeeId = $this.attr('rel');
+
+//                $(function () {
+//                    var token = $("meta[name='_csrf']").attr("content");
+//                    var header = $("meta[name='_csrf_header']").attr("content");
+//                    $(document).ajaxSend(function (e, xhr, options) {
+//                        xhr.setRequestHeader(header, token);
+//                    });
+//                });
+
+                var $data = {
+                    _csrf: csrf,
+                    projectId: $projectId,
+                    employeeId: $employeeId
+                };
+                $.post('/' + pageURI + '/remove-employee', $data, function (data) {
+                    $this.parent().parent().slideUp();
+                    reloadMainTable()
+                });
+
+            }
+        })
     });
 
-    $('#add-employee-form').on('submit',function(){
-    $.post('/projects/employees/add',$(this).serialize(),function(data){
-    console.log(data);
-    $('#modal-addemp').modal('hide');
-    });
-    return false;
-    });
-    
-    
-    
-    $('.list-emp-btn').on('click',function(event){   
-        var $id = $(this).attr('rel');
-        console.log($id);
-     $.get('/projects/employees/'+$id,function(data){
-     $.each(data,function(index,row){
-     console.log(row.employee.firstName);
-     var empData =[];
-     var $data = (row.employee.firstName + row.employee.lastName);     
-     empData=$data; 
-      $('ul #test').append(empData);
-    })
-                      
-    });
-    $('#modal-list-emp').modal();        
-    });
-    });
-
-    $(function(){
-    $('.client-popover-btn').popover({
-    html:true,      
-    placement:'top',
-    trigger: 'hover',
-    content: function(){    
-    var content = $(".client-popover"); 
-    var $row = JSON.parse($(this).attr('rel'));
-    $('#client-popup-id').html($row.id);
-    $('#client-popup-name').html($row.name);
-    $('#client-popup-address').html($row.address);
-    $('#client-popup-phone').html($row.phoneNo);
-    $('#client-popup-email').html($row.email);   
-    $('.client-popover').popover('show');
-    return content.html();
-    }
-    });
+    $(function () {
+        $('.client-popover-btn').popover({
+            html: true,
+            placement: 'top',
+            trigger: 'hover',
+            content: function () {
+                var content = $(".client-popover");
+                var $row = JSON.parse($(this).attr('rel'));
+                $('#client-popup-id').html($row.id);
+                $('#client-popup-name').html($row.name);
+                $('#client-popup-address').html($row.address);
+                $('#client-popup-phone').html($row.phoneNo);
+                $('#client-popup-email').html($row.email);
+                $('.client-popover').popover('show');
+                return content.html();
+            }
+        });
     });
 
 
 
     $(".knob").knob();
 
-    $('.create-modal-btn').on('click',function(){
-    $('.project-create-modal').modal();
+    $('.create-modal-btn').on('click', function () {
+        $('.project-create-modal').modal();
     })
-    $('.edit-modal-btn').on('click',function(){     
-    $('.project-edit-modal').modal();
+    $('.edit-modal-btn').on('click', function () {
+        $('.project-edit-modal').modal();
     })
 
 
-    $('.change-status-btn').on('click',function(){
-        var $id = $(this).attr('rel');   
-        var $name=$(this).attr('data');
-        $statusPopup=$('#status-popup');
+    $('.change-status-btn').on('click', function () {
+        var $id = $(this).attr('rel');
+        var $name = $(this).attr('data');
+        $statusPopup = $('#status-popup');
         $statusPopup.find('#projectName').html($name);
-        $statusPopup.find('input[name=project]').val($id);        
+        $statusPopup.find('input[name=project]').val($id);
         $statusPopup.modal();
     })
-    
-    $('#status-popup').on('submit','#change-status',function(){
-    $.post('/projects/update-status',$(this).serialize(),function(data){    
-    $('#status-popup').modal('hide');
-    });
-    return false;
+
+    $('#status-popup').on('submit', '#change-status', function () {
+        console.log($(this).serialize());
+        $.post('/projects/update-status', $(this).serialize(), function (data) {
+            reloadMainTable();
+            $('#status-popup').modal('hide');
+        });
+        return false;
     })
-    
-    $('.task-add-btn').on('click',function(){
+
+    $('.task-add-btn').on('click', function () {
         $('#task-add-modal').modal();
     })
-   
+
+    function reloadMainTable() {
+        $.get('/' + pageURI + '/table', function (data) {
+            $('#view-table').html(data);
+        })
+    }
+
 </script>
 <style>
 

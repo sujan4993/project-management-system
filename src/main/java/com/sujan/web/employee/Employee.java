@@ -8,6 +8,7 @@ package com.sujan.web.employee;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sujan.web.conversation.Conversation;
 import com.sujan.web.project.entity.Project;
+import com.sun.org.apache.xalan.internal.xsltc.cmdline.getopt.GetOpt;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -49,6 +50,9 @@ public class Employee {
 
     @Column(name = "sex")
     private String sex;
+    
+    @Column(name="is_deleted")
+    private boolean isDeleted;
 
     @ManyToMany(mappedBy = "employeeList")
     @JsonIgnore
@@ -137,4 +141,12 @@ public class Employee {
         this.sex = sex;
     }
 
+    public boolean isIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+    
 }

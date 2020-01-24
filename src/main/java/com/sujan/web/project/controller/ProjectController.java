@@ -5,6 +5,7 @@
  */
 package com.sujan.web.project.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sujan.web.client.ClientRepository;
 import com.sujan.web.project.entity.Project;
 import com.sujan.web.core.controller.CRUDController;
@@ -51,14 +52,15 @@ public class ProjectController extends CRUDController<Project, Integer> {
 
     @Autowired
     private ProjectClientRepository projectClientRepository;
-    
-     @Autowired
+
+    @Autowired
     private ProjectStatusRepository projectStatusRepository;
-     @Autowired
-     private TasksRepository tasksRepository;
+    @Autowired
+    private TasksRepository tasksRepository;
 
     @Autowired
     private ClientRepository clientRepository;
+
     public ProjectController() {
         pageTitle = "Project";
         uri = "projects";
@@ -74,6 +76,12 @@ public class ProjectController extends CRUDController<Project, Integer> {
         return "project/detail";
     }
 
+    @GetMapping(value = "/timeline/{id}")
+    public String timeline(@PathVariable("id") int id, Model model) {
+        model.addAttribute("pageTitle", "Project Timeline");
+        return "project/timeline";
+    }
+
     @GetMapping(value = "/conversation/{id}")
     public String conversation(@PathVariable("id") int id, Model model) {
         model.addAttribute("pageTitle", "Conversation");
@@ -84,29 +92,40 @@ public class ProjectController extends CRUDController<Project, Integer> {
     public String index(Model model) {
         model.addAttribute("employee", employeeRepository.findAll());
         model.addAttribute("status", statusRepository.findAll());
-        model.addAttribute("client",clientRepository.findAll());
-        model.addAttribute("tasks",tasksRepository.findAll());
+        model.addAttribute("client", clientRepository.findAll());
+        model.addAttribute("tasks", tasksRepository.findAll());
         return super.index(model); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String create(Model model) {
         model.addAttribute("employees", employeeRepository.findAll());
-        model.addAttribute("projectstatus",statusRepository.findAll());
-        model.addAttribute("projectclient",clientRepository.findAll());
+        model.addAttribute("projectstatus", statusRepository.findAll());
+        model.addAttribute("projectclient", clientRepository.findAll());
         return super.create(model); //To change body of generated methods, choose Tools | Templates.
     }
 
     @GetMapping(value = "/employees/{id}")
     @ResponseBody
-    public List<ProjectEmployee> employees(@PathVariable("id") int projectId) {
-        return projectEmployeeRepository.findByProjectId(projectId);
+    public List<Employee> employees(@PathVariable("id") int projectId) {
+        Project project = repository.findById(projectId).get();
+        return project.getEmployeeList();
     }
 
     @GetMapping(value = "/employees")
     @ResponseBody
     public List<ProjectEmployee> findAll() {
         return projectEmployeeRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    @GetMapping(value = "/edit/{id}")
+    public String edit(@PathVariable("id") Integer id, Model model) {
+        model.addAttribute("employee", employeeRepository.findEmployeeNotIn(id));
+        model.addAttribute("status", statusRepository.findAll());
+        model.addAttribute("client", clientRepository.findAll());
+        return super.edit(id, model); //To change body of generated methods, choose Tools | Templates.
     }
 
     @PostMapping(value = "/employees/add")
@@ -124,14 +143,34 @@ public class ProjectController extends CRUDController<Project, Integer> {
         }
         projectEmployeeRepository.saveAll(projectEmployees);
         return "success";
-    }    
-    
+    }
+
     @PostMapping(value = "/update-status")
     @Transactional
     @ResponseBody
-    public String updateStatus(ProjectStatus status){
-         projectStatusRepository.save(status);
+    public String updateStatus(ProjectStatus status) {
+        projectStatusRepository.save(status);
         return "success";
     }
-     
+
+    @PostMapping(value = "/remove-employee")
+    @Transactional
+    @ResponseBody
+    public String removeEmployee(@RequestParam("projectId") int projectId,
+            @RequestParam("employeeId") int employeeId) {
+        projectEmployeeRepository.deleteByProjectIdAndEmployeeId(projectId, employeeId);
+        return "" + "projectId:" + projectId + ",employeeId:" + employeeId;
+    }
+
+    @Override
+    public String save(Project model) {
+
+        if (model.getId() != 0) {
+            Project project = repository.findById(model.getId()).get();
+            model.setEmployeeList(project.getEmployeeList());
+            model.setStatus(project.getStatus());
+        }
+        return super.save(model); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

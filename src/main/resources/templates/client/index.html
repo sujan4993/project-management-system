@@ -13,8 +13,9 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            <!--<div th:include="${viewPath}+'/table'"></div>-->
-            <div id="view-table" th:replace="client/table"></div>
+            
+            <div id="view-table" th:include="${viewPath}+'/table'"></div>
+           
         </div>
         <!-- /.box-body -->
         <div class="box-footer clearfix">
@@ -29,7 +30,6 @@
     </div>
 </div>
 <div th:replace="client/components/form-dialog"></div>
-
 <div th:replace="shared/footer"></div>
 <script>
     $(document).ready(function(){
@@ -46,7 +46,7 @@
     return false;
     });
 
-    $('.edit-btn').on('click',function(){    
+    $('#view-table').on('click','.edit-btn',function(){    
     var $id = $(this).attr('rel');
     $.getJSON('/'+pageURI+'/json/'+$id,function(data){
     var $dialog = $('#form-dialog');
@@ -58,7 +58,7 @@
     $('input[name=address]').val(data.address);
     $('input[name=phoneNo]').val(data.phoneNo);
     $('input[name=email]').val(data.email);
-    $('input[name=status]').attr('checked',data.status);
+    $('input[name=status]').prop('checked',data.status);
     $dialog.modal();
     })
     return false;

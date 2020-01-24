@@ -16,12 +16,9 @@ public abstract class SiteController {
 
     protected String pageTitle,viewPath;
 
-    @ModelAttribute(value = "pageTitle")
-    public String getPageTitle() {
-        return pageTitle;
-    }
     @ModelAttribute()
     public void globalVariables(Model model){
     model.addAttribute("viewPath",viewPath);
+     model.addAttribute("pageTitle",pageTitle);
     }
 }

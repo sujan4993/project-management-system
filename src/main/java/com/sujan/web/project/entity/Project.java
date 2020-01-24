@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,6 +24,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -66,7 +66,6 @@ public class Project {
                 @JoinColumn(name = "employee_id")}
     )
     @ManyToMany()
-    @JsonIgnore
     private List<Employee> employeeList = new ArrayList<>();
 
     @JoinTable(
@@ -84,6 +83,7 @@ public class Project {
 
     @JsonBackReference
     @ManyToMany
+    
     @JoinTable(
             name = "tbl_status_project",
             joinColumns
@@ -91,6 +91,7 @@ public class Project {
             inverseJoinColumns
             = {
                 @JoinColumn(name = "status_id")}
+            
     )
 //    @ManyToOne()
 //    @JoinColumn(name = "status_id", referencedColumnName = "id",nullable = true)
