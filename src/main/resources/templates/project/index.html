@@ -78,21 +78,35 @@
 <script src="/webjars/adminlte/2.3.11/plugins/knob/jquery.knob.js"></script>
 <script>
     $(document).ready(function () {
-        $('.add-emp-btn').on('click', function () {
+        $('#view-table').on('click','.add-emp-btn', function () {
             var $id = $(this).attr('rel');
             $('#modal-project-id').val($id);
+            $.get('/employees/project-notassigned/' + $id, function (data) {
+                var $list = $('#modal-addemp #add-employee-form .test select[name=employeeList]');
+                $list.empty();
+                $.each(data, function (index, row) {
+                    console.log(row.firstName);
+                    $('<option/>').val(row.id).text(row.firstName)
+                            .appendTo($list);
+                    //var select = ` <option value="${row.id}">${row.firstName}</option> `;
+                    //$list.append(select);
+                });
+            });
             $('#modal-addemp').modal();
         });
 
         $('#add-employee-form').on('submit', function () {
             $.post('/projects/employees/add', $(this).serialize(), function (data) {
-                reloadMainTable();
-                $('#modal-addemp').modal('hide');
+                console.log(data);
+                if (data == 'success') {
+                    $('#modal-addemp').modal('hide');
+                    reloadMainTable();
+                }
             });
             return false;
         });
 
-        $('.list-emp-btn').on('click', function (event) {
+        $('#view-table').on('click','.list-emp-btn', function (event) {
             var $id = $(this).attr('rel');
             var $projectName = $(this).attr('data-name');
             var $dialog = $('#employee-list-dialog');

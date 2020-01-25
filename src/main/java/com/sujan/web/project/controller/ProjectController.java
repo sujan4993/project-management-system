@@ -164,7 +164,6 @@ public class ProjectController extends CRUDController<Project, Integer> {
 
     @Override
     public String save(Project model) {
-
         if (model.getId() != 0) {
             Project project = repository.findById(model.getId()).get();
             model.setEmployeeList(project.getEmployeeList());

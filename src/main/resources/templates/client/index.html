@@ -13,9 +13,9 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            
+
             <div id="view-table" th:include="${viewPath}+'/table'"></div>
-           
+
         </div>
         <!-- /.box-body -->
         <div class="box-footer clearfix">
@@ -32,49 +32,49 @@
 <div th:replace="client/components/form-dialog"></div>
 <div th:replace="shared/footer"></div>
 <script>
-    $(document).ready(function(){
-    $('.add-btn').on('click',function(){
-    var $dialog = $('#form-dialog');
-    $dialog.find('#modal-title')
-    .html('Create '+pageTitle)    
-    $dialog.modal();
-    $('input').val('');
-    $('input[type=checkbox]').attr('checked',false).val('1');    
-    $('input[name=id]').val(0);   
-    $('input[name=_csrf]').val(csrf);   
-    
-    return false;
-    });
+    $(document).ready(function () {
+        $('.add-btn').on('click', function () {
+            var $dialog = $('#form-dialog');
+            $dialog.find('#modal-title')
+                    .html('Create ' + pageTitle)
+            $dialog.modal();
+            $('input').val('');
+            $('input[type=checkbox]').attr('checked', false).val('1');
+            $('input[name=id]').val(0);
+            $('input[name=_csrf]').val(csrf);
 
-    $('#view-table').on('click','.edit-btn',function(){    
-    var $id = $(this).attr('rel');
-    $.getJSON('/'+pageURI+'/json/'+$id,function(data){
-    var $dialog = $('#form-dialog');
-    $dialog.find('#modal-title')
-    .html('Edit '+pageTitle)
-    $('input[name=id]').val(data.id);
-    $('input[name=firstName]').val(data.firstName);
-    $('input[name=lastName]').val(data.lastName);
-    $('input[name=address]').val(data.address);
-    $('input[name=phoneNo]').val(data.phoneNo);
-    $('input[name=email]').val(data.email);
-    $('input[name=status]').prop('checked',data.status);
-    $dialog.modal();
-    })
-    return false;
-    });
+            return false;
+        });
 
-    $('#form-dialog').on('submit','#app-form',function(){    
-    $.post('/'+pageURI+'/json',$(this).serialize(),function(data){    
-    if(data==='success'){
-    $('#form-dialog').modal('hide');
-    $.get('/'+pageURI+'/table',function(data){    
-        $('#view-table').html(data);
-        
-    });
-    }
-    });
-    return false;
-    });
+        $('#view-table').on('click', '.edit-btn', function () {
+            var $id = $(this).attr('rel');
+            $.getJSON('/' + pageURI + '/json/' + $id, function (data) {
+                var $dialog = $('#form-dialog');
+                $dialog.find('#modal-title')
+                        .html('Edit ' + pageTitle)
+                $('input[name=id]').val(data.id);
+                $('input[name=firstName]').val(data.firstName);
+                $('input[name=lastName]').val(data.lastName);
+                $('input[name=address]').val(data.address);
+                $('input[name=phoneNo]').val(data.phoneNo);
+                $('input[name=email]').val(data.email);
+                $('input[name=status]').prop('checked', data.status);
+                $dialog.modal();
+            })
+            return false;
+        });
+
+        $('#form-dialog').on('submit', '#app-form', function () {
+            $.post('/' + pageURI + '/json', $(this).serialize(), function (data) {
+                if (data === 'success') {
+                    $('#form-dialog').modal('hide');
+                    $.get('/' + pageURI + '/table', function (data) {
+                        $('#view-table').html(data);
+
+                    });
+                }
+            });
+            return false;
+        });
     });
 </script>
