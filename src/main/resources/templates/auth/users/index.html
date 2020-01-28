@@ -1,0 +1,59 @@
+<div th:replace="shared/header"></div>
+<div class="col-md-12">
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <a th:href="@{'/'+${pageURI}+'/create'}" class="btn btn-primary btn-xs">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            </h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Created Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user:${records}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.userName}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.createdDate}"></td>
+                        <td>
+                            <label th:if="${user.status}" class="label label-success">Active</label>
+                            <label th:unless="${user.status}" class="label label-danger">Inactive</label>
+                        </td>
+                        <td>
+                            <a th:href="@{${pageURI}+'/edit/'+${user.id}}" class="btn btn-success btn-xs">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                            <a th:href="@{${pageURI}+'/delete/'+${user.id}}" onclick="return confirm('Are you sure to delete?')" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </td>                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+            <ul class="pagination pagination-sm no-margin pull-right">
+                <li><a href="#">&laquo;</a></li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">&raquo;</a></li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+<div th:replace="shared/footer"></div>

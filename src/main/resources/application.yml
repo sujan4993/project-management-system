@@ -9,5 +9,20 @@ spring:
         password: 
     jpa:
         showSql: true
-            
-        
+       
+        main:
+            bannerMode:off
+        mail:
+            protocol:smtp
+            host:smtp.mailtrap.io
+            port:2525
+            username:be50182c611624
+            password:d5a9e03e5a15b8
+               
+##Email config
+#spring.main.banner-mode=off
+#spring.mail.protocol=smtp
+#spring.mail.host=smtp.mailtrap.io
+#spring.mail.port=2525
+#spring.mail.username=be50182c611624
+#spring.mail.password=d5a9e03e5a15b8

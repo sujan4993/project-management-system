@@ -15,10 +15,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public abstract class SiteController {
 
     protected String pageTitle,viewPath;
+    protected String activeMenu;
 
     @ModelAttribute()
     public void globalVariables(Model model){
     model.addAttribute("viewPath",viewPath);
      model.addAttribute("pageTitle",pageTitle);
+    }
+    
+    @ModelAttribute(value = "activeMenu")
+    public String getActiveMenu(){
+    return activeMenu;
     }
 }

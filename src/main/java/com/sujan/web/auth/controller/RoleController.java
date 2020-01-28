@@ -5,9 +5,9 @@
  */
 package com.sujan.web.auth.controller;
 
-import javax.servlet.http.HttpSession;
+import com.sujan.web.auth.entity.Role;
+import com.sujan.web.core.controller.CRUDController;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -15,18 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author sujan
  */
 @Controller
-@RequestMapping(value="/login")
-public class LoginController {
-    
-    @GetMapping
-    public String index(){
-        return "auth/login/index";
+@RequestMapping(value = "/roles")
+public class RoleController extends CRUDController<Role, Integer>{
+
+    public RoleController() {
+        pageTitle="Role";
+        uri="roles";
+        viewPath="auth/roles";
+        activeMenu="auth";
     }
     
-    @GetMapping(value = "/logout")
-    public String logout(HttpSession Session){
-        Session.invalidate();
-        return "redirect:/login";
-    }
     
 }

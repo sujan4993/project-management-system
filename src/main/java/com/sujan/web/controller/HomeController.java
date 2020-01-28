@@ -5,6 +5,7 @@
  */
 package com.sujan.web.controller;
 
+import com.sujan.web.core.controller.SecuredController;
 import com.sujan.web.core.controller.SiteController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,18 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Controller
 @RequestMapping(value = "/")
-public class HomeController extends SiteController {
+public class HomeController extends SecuredController {
 
     public HomeController(){
         this.pageTitle = "Main-Dashboard";
+        activeMenu="dashboard";
     }
     
     @GetMapping()
     public String index(Model model) {
-        model.addAttribute("name","Creators Institute");
-        model.addAttribute("colors",
-                new String[]{"red","green","blue","orange"});
-        return "index";
+       return "index";
     }
 
 }
