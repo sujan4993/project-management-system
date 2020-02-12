@@ -15,7 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
  *
@@ -52,9 +55,18 @@ public class UserController extends CRUDController<User, Integer> {
     }
     
     @Override
-    public String save(User model) {
-        model.setPassword(passwordEncoder.encode(model.getPassword()));
-        return super.save(model);
+    public String save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return super.save(user);
+    }
+    
+    @PostMapping(value = "/addNew")
+    public RedirectView addNew(User user, RedirectAttributes redir){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        RedirectView redirectView = new RedirectView("/login",true);
+        redir.addFlashAttribute("message", "You successfully registered ! You can now Login");
+        return redirectView;
     }
 
 }
