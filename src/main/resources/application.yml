@@ -16,8 +16,8 @@ spring:
             protocol:smtp
             host:smtp.mailtrap.io
             port:2525
-            username:be50182c611624
-            password:d5a9e03e5a15b8
+            username:{yourusername}
+            password:{yourpassword}
                
 ##Email config
 #spring.main.banner-mode=off
